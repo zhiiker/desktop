@@ -1,82 +1,152 @@
 {
-  "name": "revolt-desktop",
-  "version": "1.0.3",
-  "description": "Revolt desktop app",
-  "private": true,
-  "author": {
-    "name": "Paul Makles",
-    "url": "https://insrt.uk",
-    "email": "me@insrt.uk"
-  },
-  "homepage": "https://revolt.chat",
-  "main": "bundle/main.js",
-  "scripts": {
-    "build:bundle": "tsc",
-    "watch:bundle": "tsc-watch",
-    "start": "electron .",
-    "eb": "electron-builder",
-    "release": "dotenv -e .env electron-builder --publish always",
-    "build:linux:tar": "electron-builder -l tar.gz",
-    "build:linux:unpacked": "electron-builder -l dir",
-    "build:linux:appimage": "electron-builder -l AppImage",
-    "build:mac": "electron-builder --mac --universal",
-    "build:windows:nsis": "electron-builder -w nsis",
-    "build:windows:appx": "electron-builder -w appx",
-    "test:linux:appimage": "dist/Revolt-1.0.1.AppImage",
-    "clean": "rimraf dist"
-  },
-  "repository": "revoltchat/desktop",
-  "devDependencies": {
-    "@types/auto-launch": "^5.0.2",
-    "@types/discord-rpc": "^4.0.0",
-    "dotenv-cli": "^4.0.0",
-    "electron": "^13.1.6",
-    "electron-builder": "^22.11.7",
-    "rimraf": "^3.0.2",
-    "tsc-watch": "^4.4.0",
-    "typescript": "^4.3.5"
-  },
-  "build": {
-    "appId": "chat.revolt.app",
+    "name": "revolt-desktop",
+    "version": "1.0.8",
+    "description": "Revolt desktop app",
+    "private": true,
+    "author": {
+        "name": "Paul Makles",
+        "url": "https://insrt.uk",
+        "email": "me@insrt.uk"
+    },
+    "homepage": "https://revolt.chat",
+    "main": "bundle/main.js",
+    "scripts": {
+        "start": "electron .",
+        "eb": "electron-builder",
+        "ci": "electron-builder --publish onTagOrDraft",
+        "release": "dotenv -e .env electron-builder --publish always",
+        "watch:bundle": "tsc-watch",
+        "build:bundle": "tsc",
+        "build:linux": "electron-builder -l",
+        "build:mac": "electron-builder -m",
+        "build:windows": "electron-builder -w",
+        "clean": "rimraf dist",
+        "fmt": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'"
+    },
+    "repository": "revoltchat/desktop",
+    "devDependencies": {
+        "@types/auto-launch": "^5.0.2",
+        "@types/discord-rpc": "^4.0.3",
+        "dotenv-cli": "^6.0.0",
+        "electron": "33",
+        "electron-builder": "^23.6.0",
+        "node-gyp": "^10.2.0",
+        "prettier": "^2.8.0",
+        "rimraf": "^3.0.2",
+        "tsc-watch": "^5.0.3",
+        "typescript": "^4.9.3"
+    },
     "productName": "Revolt",
-    "mac": {
-      "target": [
-        "zip"
-      ],
-      "category": "public.app-category.social-networking"
+    "build": {
+        "appId": "chat.revolt.app",
+        "mac": {
+            "target": [
+                {
+                    "target": "zip",
+                    "arch": [
+                        "universal"
+                    ]
+                },
+                {
+                    "target": "dmg",
+                    "arch": [
+                        "universal"
+                    ]
+                }
+            ],
+            "category": "public.app-category.social-networking",
+            "files": "!node_modules/**/*.{mk,a,o,h}"
+        },
+        "linux": {
+            "target": [
+                {
+                    "target": "AppImage",
+                    "arch": [
+                        "x64",
+                        "armv7l",
+                        "arm64"
+                    ]
+                },
+                {
+                    "target": "tar.gz",
+                    "arch": [
+                        "x64",
+                        "armv7l",
+                        "arm64"
+                    ]
+                }
+            ],
+            "category": "InstantMessaging",
+            "executableName": "revolt-desktop",
+            "desktop": {
+                "Name": "Revolt",
+                "Comment": "User-first, privacy focused chat platform.",
+                "Terminal": false,
+                "Type": "Application",
+                "Icon": "revolt-desktop",
+                "Categories": "InstantMessaging",
+                "StartupWMClass": "RevoltDesktop"
+            }
+        },
+        "win": {
+            "target": [
+                {
+                    "target": "nsis",
+                    "arch": [
+                        "x64",
+                        "ia32",
+                        "arm64"
+                    ]
+                },
+                {
+                    "target": "appx",
+                    "arch": [
+                        "x64",
+                        "arm64"
+                    ]
+                }
+            ]
+        },
+        "appx": {
+            "backgroundColor": "#0F1823",
+            "displayName": "Revolt Chat",
+            "applicationId": "revolt.chat",
+            "identityName": "40345RevoltCommunications.revolt.chat",
+            "publisher": "CN=B040CC7E-0016-4AF5-957F-F8977A6CFA3B",
+            "publisherDisplayName": "Revolt Communications"
+        },
+        "publish": {
+            "provider": "github"
+        },
+        "dmg": {
+            "background": "build/dmg/background.png",
+            "icon": "build/dmg/icon.icns",
+            "iconSize": 80,
+            "window": {
+                "x": 200,
+                "y": 120
+            },
+            "contents": [
+                {
+                    "x": 125,
+                    "y": 185,
+                    "type": "file"
+                },
+                {
+                    "x": 375,
+                    "y": 185,
+                    "type": "link",
+                    "path": "/Applications"
+                }
+            ]
+        }
     },
-    "linux": {
-      "target": [
-        "AppImage",
-        "pacman",
-        "tar.gz",
-        "deb"
-      ],
-      "category": "Network"
+    "dependencies": {
+        "auto-launch": "^5.0.5",
+        "discord-rpc": "npm:@insertish/discord-rpc@*",
+        "electron-store": "^8.1.0",
+        "electron-updater": "^5.3.0",
+        "electron-window-state": "^5.0.3"
     },
-    "win": {
-      "target": [
-        "nsis",
-        "portable"
-      ]
-    },
-    "appx": {
-      "displayName": "Revolt Chat",
-      "applicationId": "revolt.chat",
-      "identityName": "40345RevoltCommunications.revolt.chat",
-      "publisher": "CN=B040CC7E-0016-4AF5-957F-F8977A6CFA3B",
-      "publisherDisplayName": "Revolt Communications"
-    },
-    "publish": {
-      "provider": "github"
-    }
-  },
-  "dependencies": {
-    "auto-launch": "^5.0.5",
-    "discord-rpc": "^4.0.1",
-    "electron-store": "^8.0.0",
-    "electron-updater": "^4.3.9",
-    "electron-window-state": "^5.0.3",
-    "electron-winstore-auto-launch": "^2.0.6"
-  }
+    "packageManager": "yarn@3.3.0"
 }

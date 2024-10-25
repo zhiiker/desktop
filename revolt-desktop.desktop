@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Revolt
-Comment=User-first, privacy focused chat platform.
+Comment=User-first chat platform. 
 Exec=revolt-desktop
 Terminal=false
 Type=Application
